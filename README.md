@@ -1,70 +1,35 @@
-# Getting Started with Create React App
+# About Project
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+I decided to create a sample project in which we are going to enter contacts details and save it in a component state.
 
-## Available Scripts
+It has two components(nothing fancy) i.e. `Home` and `Form`. These two components interact with each other via `EventBus`. Thus it allows us to keep them loosely coupled with each other.
 
-In the project directory, you can run:
+First of all create a new folder with the name of `components` inside `src` folder then create two more folders i.e. `Home` and `Form`. Inside `Home` create `Home.js` file and inside `Form` folder create `Form.js` file.
+In this component, I am simply creating an HTML form with `name`, `email` and `Number` fields and when user clicks on `save` button the it calls `save` function. I will implement this function a little later in this article.
 
-### `npm start`
+Now open `Home.js` file
+As you can see it is also a very simple component for now. I am importing `useEffect` and `useState` hooks. Then inside component, I am creating a local state variable `contacts`. Inside JSX, I am checking if there are any contacts in local state variable `contacts` if there are nothing show a message `No contacts found`.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Now open `App.js` file
+Here I am importing both `Home` and `Form` components and rendering them inside App component.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Now that we are done with the basic stuff, it is time to get into `EventBus` which is the gest of this article. Create `EventBus` folder inside `src` folder and create a file inside that folder with the name of `EventBus.js`.
+As you can see, I am exporting an `EventBus` function and inside this function I am declaring `eventLists` map. Then I am returning anonymous function and inside that I have three functions i.e. `dispatch`, `listen` and `destroy`.
 
-### `npm test`
+`dispatch` function is used to trigger an event and `listen` function is used to listen to the event that is triggered via `dispatch event. The destroy function simply gets rid of the event.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Now that we have the `EventBus` layer setup. It is time to use it. Lets open `App.js` file and update your code
 
-### `npm run build`
+Lines number 3 and 5 and new lines added to this file. I am importing `EventBus` and the adding `Events` property to global scope assigning `EventBus()()` function by calling it. After doing that all the functions inside `EventBus` is available in entire project.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Now what we want is that when user enters details for new contact and press `save` button we will `dispatch` an event. So lets open `Form.js` file and update it
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Lines 5,6,7 and 9 and new lines added to this file. I am getting `name`, `phone` and `email` from the form upon `save` button clicked and the I dispatch `SAVE` event by calling `window.Events.dispatch(‘SAVE’, { name, email, phone });`.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Now I am going to listen to that event in `Home.js` component where all list of contacts and saved in a local variable state and displays all these contacts in the form of table.
 
-### `npm run eject`
+Open `Home.js` component
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Inside the `useEffect` hook I am listening to `SAVE` event and then call the callback function save contact and pass the object received from the `dispatch` function from `Form.js` component. Inside `saveContact` function I am updating the `contacts` state with newly added contact from the `Form.js` component.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Inside JSX, I added a table and renders all the contacts there which is self explanatory.
