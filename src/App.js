@@ -1,9 +1,14 @@
-import React from "react";
+import { Home } from "./components/Home/Home";
+import { Form } from "./components/Form/Form";
+import { EventBus } from "./EventBus/EventBus";
+
+window.Events = EventBus()();
 
 function App() {
   return (
-    <div className="App">
-      <h1>Sara</h1>
+    <div>
+      <Form />
+      <Home />
     </div>
   );
 }
